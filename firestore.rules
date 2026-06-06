@@ -1,0 +1,61 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // 1. Global safety net - Deny all by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // STANDALONE GLOBAL HELPERS
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isBootstrappedAdmin() {
+      return isSignedIn() && request.auth.token.email == 'dakarmirajendra@gmail.com';
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // VALIDATION BLUEPRINTS (Pillar 2: STANDALONE)
+    function isValidMoodLog(data) {
+      return data.keys().hasAll(['emotion', 'emoji', 'score', 'tip', 'timestamp', 'isCameraDetected']) 
+        && data.keys().size() == 6
+        && data.emotion is string && data.emotion.size() <= 50
+        && data.emoji is string && data.emoji.size() <= 8
+        && (data.score is number || data.score is int) && data.score >= 0 && data.score <= 5
+        && data.tip is string && data.tip.size() <= 1000
+        && data.timestamp is string
+        && data.isCameraDetected is bool;
+    }
+
+    function isValidChatMessage(data) {
+      return data.keys().hasAll(['sender', 'text', 'timestamp'])
+        && data.keys().size() == 3
+        && data.sender is string && (data.sender == 'user' || data.sender == 'ai')
+        && data.text is string && data.text.size() <= 10000
+        && data.timestamp is string;
+    }
+
+    // COLLECTION: MOOD LOGS
+    match /mood_logs/{logId} {
+      allow get: if isValidId(logId);
+      allow list: if true; 
+      allow create: if isValidId(logId) && isValidMoodLog(request.resource.data);
+      // Deny direct update or deletion to patients to block tampering
+      allow update, delete: if isBootstrappedAdmin();
+    }
+
+    // COLLECTION: CHATS
+    match /chats/{chatId} {
+      allow get: if isValidId(chatId);
+      allow list: if true; 
+      allow create: if isValidId(chatId) && isValidChatMessage(request.resource.data);
+      // Deny direct update or deletion to patients to block tampering
+      allow update, delete: if isBootstrappedAdmin();
+    }
+  }
+}

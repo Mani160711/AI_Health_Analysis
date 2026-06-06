@@ -1,0 +1,69 @@
+{
+  "entities": {
+    "MoodLog": {
+      "title": "MoodLog",
+      "description": "Historical record of the user's emotional state, scanned via facial biomarkers or manually selected.",
+      "type": "object",
+      "properties": {
+        "emotion": {
+          "type": "string",
+          "description": "The normalized emotion name (e.g. Happy, Serene, Anxious, Neutral)."
+        },
+        "emoji": {
+          "type": "string",
+          "description": "Representative emoji indicator."
+        },
+        "score": {
+          "type": "number",
+          "description": "Numerical score corresponding to resilience/calmness index (0 to 5)."
+        },
+        "tip": {
+          "type": "string",
+          "description": "Somatic tip or coping recommendation suggested by the app."
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO timestamp of log creation."
+        },
+        "isCameraDetected": {
+          "type": "boolean",
+          "description": "Boolean flag tracking if detected via webcam or selected manually."
+        }
+      },
+      "required": ["emotion", "emoji", "score", "timestamp", "isCameraDetected"]
+    },
+    "ChatMessage": {
+      "title": "ChatMessage",
+      "description": "Individual chat logs containing user requests and empathetic AI doctor triages.",
+      "type": "object",
+      "properties": {
+        "sender": {
+          "type": "string",
+          "enum": ["user", "ai"],
+          "description": "Sender indicator: 'user' or 'ai'."
+        },
+        "text": {
+          "type": "string",
+          "description": "Text content of the message."
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO timestamp of the chat entry."
+        }
+      },
+      "required": ["sender", "text", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/mood_logs/{logId}": {
+      "schema": "MoodLog",
+      "description": "Collection storing the historical sequence of mood assessments."
+    },
+    "/chats/{chatId}": {
+      "schema": "ChatMessage",
+      "description": "Collection storing full persistent conversational history of diagnostic inquiries."
+    }
+  }
+}

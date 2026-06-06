@@ -1,0 +1,105 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  
+  /* Custom Brand Design System Palette - Clinical Dark Deep-Teal Vercel Aesthetic */
+  --color-dark-bg: #042F2E;
+  --color-neon-blue: #14B8A6;
+  --color-neon-green: #10b981;
+  --color-glass-white: rgba(20, 184, 166, 0.03);
+  --color-glass-blue: rgba(20, 184, 166, 0.05);
+}
+
+@layer utilities {
+  .glass-card {
+    background: #0F3D3C;
+    border: 1px solid #145e5c;
+    box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.45);
+  }
+  
+  .glass-card-glowing {
+    background: #124d4c;
+    border: 1px solid #1e706e;
+    box-shadow: 0 4px 24px 0 rgba(20, 184, 166, 0.1);
+  }
+  
+  .text-shadow-glow {
+    text-shadow: 0 0 8px rgba(20, 184, 166, 0.45);
+  }
+  
+  .text-shadow-green {
+    text-shadow: 0 0 8px rgba(20, 184, 166, 0.45);
+  }
+}
+
+/* Heartbeat ECG Keyframes & SVG Stroke Animation */
+@keyframes draw-ecg {
+  0% {
+    stroke-dashoffset: 2000;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.animate-ecg {
+  stroke-dasharray: 1000;
+  animation: draw-ecg 8s linear infinite;
+}
+
+@keyframes scanline {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+.animate-scan {
+  animation: scanline 6s linear infinite;
+}
+
+/* Shimmer Loading Keyframe */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.03) 25%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.03) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+}
+
+/* Custom scrollbar styling for a premium dark UI */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #09090b;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
